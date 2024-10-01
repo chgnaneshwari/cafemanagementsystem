@@ -11,11 +11,17 @@ pipeline {
         stage('Set Up Environment') {
             steps {
                 script {
-                    // Set up Python environment
+                    // Check if the virtual environment exists
+                    if (!fileExists('venv')) {
+                        // Set up Python environment
+                        sh '''
+                            python -m venv venv  # Create a virtual environment
+                        '''
+                    }
+                    // Activate the virtual environment and install dependencies
                     sh '''
-                        python -m venv venv  # Create a virtual environment
                         source venv/bin/activate  # Activate the virtual environment
-                        pip install -r requirements.txt  # Install dependencies
+                        pip install flask pytest  # Install specific dependencies
                     '''
                 }
             }
@@ -35,6 +41,7 @@ pipeline {
                     sh '''
                         source venv/bin/activate  # Activate virtual environment
                         pytest  # Running tests using pytest
+                        deactivate  # Deactivate the virtual environment
                     '''
                 }
             }
@@ -47,6 +54,11 @@ pipeline {
         }
         failure {
             echo 'Pipeline failed.'
+        }
+        always {
+            // Optionally clean up resources or send notifications
+            echo 'Cleaning up...'
+            sh 'rm -rf venv' // Remove the virtual environment if needed
         }
     }
 }
