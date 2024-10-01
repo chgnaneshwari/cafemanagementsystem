@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #343a40;
+        }
+        h1 {
+            color: #007bff;
+        }
+        form {
+            margin: 20px;
+        }
+        label {
+            display: block;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        input[type="number"] {
+            width: 50px;
+            margin-left: 10px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <h1>Menu</h1>
+    <form action="/" method="POST">
+        {% for item in menu %}
+            <label>
+                <input type="checkbox" name="{{ item.name }}_checkbox"> {{ item.name }} - ${{ item.price }}
+                <input type="number" name="{{ item.name }}" min="0" value="0" placeholder="Qty" style="display: none;"> 
+            </label>
+        {% endfor %}
+        <button type="submit">Order</button>
+    </form>
+
+    <script>
+        // Show quantity input when checkbox is checked
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const quantityInput = this.parentElement.querySelector('input[type="number"]');
+                quantityInput.style.display = this.checked ? 'inline' : 'none';
+                if (!this.checked) quantityInput.value = 0;  // Reset quantity to 0 when unchecked
+            });
+        });
+    </script>
+</body>
+</html>
